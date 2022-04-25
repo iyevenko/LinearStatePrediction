@@ -1,0 +1,1 @@
+Read the [blog post](https://iyevenko.github.io/jekyll/update/2022/03/09/optimal-state-encodings.html) 
