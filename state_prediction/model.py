@@ -1,7 +1,6 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-import cv2
 
 from tensorflow.keras.layers import InputLayer, Conv2D, Flatten, Dense, Lambda, LayerNormalization, Reshape, MaxPool2D
 
@@ -68,11 +67,17 @@ def Argmax2D(input_shape, beta=10):
         x_max = tf.reduce_max(x, axis=1)
         y_max = tf.reduce_max(x, axis=2)
 
-        # x needs to be mapped from [0, inf) to [0, 1]
-        abs_max = tf.reduce_max(x_max, axis=1)
+        # Normalize Inputs
+        x_mu = tf.reduce_mean(x_max)
+        x_std = tf.math.reduce_std(x_max)
+        x_norm = (x_max-x_mu)/x_std
 
-        x_samax = soft_amax(x_max/abs_max, beta=beta)
-        y_samax = soft_amax(y_max/abs_max, beta=beta)
+        y_mu = tf.reduce_mean(y_max)
+        y_std = tf.math.reduce_std(y_max)
+        y_norm = (y_max-y_mu)/y_std
+
+        x_samax = soft_amax(x_norm, beta=beta)
+        y_samax = soft_amax(y_norm, beta=beta)
 
         return tf.stack([x_samax, y_samax], axis=1)
 
